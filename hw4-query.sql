@@ -30,7 +30,6 @@ end;
 --- Part 3
 
 -- sensor 7 reported 9 times, sensor 11 reported 7 times. (just to check if produced correct values)
-
 --3a
 select sensor_id, RANK() OVER(
     ORDER BY num_reports DESC
@@ -50,7 +49,6 @@ FROM ( select sensor_id, count(*) as num_reports from REPORT
 
 --3c
 --select * from coverage;
-
 select state, sum(area) as total_area from coverage
 group by state
 having sum(area) >  (
@@ -77,7 +75,6 @@ FROM (
     order by num_charges) num_reports_taken;
 
 --3f
-
 select f.name
 from forest f join coverage c on f.forest_no = c.forest_no
 where c.state = 'PA' and f.acid_level > .60;
