@@ -27,6 +27,62 @@ begin;
 INSERT INTO WORKER VALUES (105588973, 'Natalia', 1, 'OH' );
 end;
 
+--- Part 3
+
+-- sensor 7 reported 9 times, sensor 11 reported 7 times. (just to check if produced correct values)
+
+--3a
+select sensor_id, RANK() OVER(
+    ORDER BY num_reports DESC
+) as rank
+FROM ( select sensor_id, count(*) as num_reports from REPORT
+    group by sensor_id
+    order by num_reports) num_reports_taken fetch first 3 rows only;
+
+--3b
+select sensor_id, RANK() OVER(
+    ORDER BY num_reports DESC
+) as rank
+FROM ( select sensor_id, count(*) as num_reports from REPORT
+    group by sensor_id
+    order by num_reports) num_reports_taken fetch first 2 rows only offset 3;
+
+
+--3c
+--select * from coverage;
+
+select state, sum(area) as total_area from coverage
+group by state
+having sum(area) >  (
+        select sum(area) from COVERAGE where state = 'PA'
+        )
+order by total_area desc;
+
+--3d
+--stone valley num is 3
+select r.name
+from road r NATURAL JOIN intersection i
+where i.forest_no = '3'
+group by r.name;
+
+--3e
+select ssn, name, RANK() OVER(
+    ORDER BY num_charges DESC
+) as rank
+FROM (
+    select ssn, name, count(s) as num_charges
+    from worker w join sensor s on s.maintainer = w.ssn
+    where s.energy < 3
+    group by ssn,name
+    order by num_charges) num_reports_taken;
+
+--3f
+
+select f.name
+from forest f join coverage c on f.forest_no = c.forest_no
+where c.state = 'PA' and f.acid_level > .60;
+
+
 --SELECT * FROM sensor;
 
 -----------------
@@ -52,13 +108,15 @@ group by  s.maintainer;
 --4c
 drop view if exists forest_sensor;
 create view forest_sensor as
-    select f.name as forest_name, forest_no, s.sensor_id as sensor_id
+select  f.forest_no, f.name, s.sensor_id
 from forest f, sensor s,  FOREST JOIN SENSOR ON SENSOR.x >= FOREST.mbr_xmin AND
                                                 SENSOR.x <= FOREST.mbr_xmax AND
                                                 SENSOR.y >= FOREST.mbr_ymin AND
                                                 SENSOR.y <= FOREST.mbr_ymax
+group by f.name, f.forest_no, s.sensor_id
+order by f.forest_no;
 
-select * from forest_sensor;
+--select * from forest_sensor;
 
 --4d
 --A view named FOREST ROAD that lists the number of roads intersecting each forest.
