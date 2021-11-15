@@ -1,4 +1,4 @@
--- Jacob Kefalos , Matt Rittner
+-- Jacob Kefalos , Matt Rindner
 -- jgk22@pitt.edu, Mrv17@pitt.edu
 
 -----------------
@@ -148,6 +148,7 @@ group by f.forest_no;
 -----------------
 -- Question #5:
 -----------------
+
 --5a
 select * from FOREST_ROAD
 order by num_of_roads desc
@@ -205,5 +206,5 @@ where FOREST.name != 'Big Woods' and SENSOR.x >= 150 AND
 group by FOREST.name;
 -- use the same way to locate which sensors lie within each forests
 -- and then find the sensors that lie within the range of the big woods forest
---ommit big woods so we only get the forests that share same sensors as big woods
+-- omit big woods so we only get the forests that share same sensors as big woods
 
