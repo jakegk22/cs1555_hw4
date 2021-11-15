@@ -185,6 +185,7 @@ group by f.name;
 
 -- -- select w.name, w.employing_state, c.area
 -- 5d
+--this question uses Duties_mv over the duties from question 5b
 select d_mv.maintainer, w.name, w.employing_state, sum(co.area) as total_area
 from duties_mv d_mv, worker w , state s , coverage co
 where d_mv.maintainer = w.ssn  and co.state = w.employing_state
