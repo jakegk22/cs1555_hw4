@@ -168,12 +168,14 @@ fetch first 1 rows only;
 
 --5e
 
-select f.name
-from forest f, sensor s, FOREST JOIN SENSOR ON SENSOR.x >= f.mbr_xmin AND
-                                                SENSOR.x <= f.mbr_xmax AND
-                                                SENSOR.y >= f.mbr_ymin AND
-                                                SENSOR.y <= f.mbr_ymax
-where SENSOR.x >= 150 AND
+select FOREST.name
+from FOREST JOIN SENSOR ON SENSOR.x >= FOREST.mbr_xmin AND
+                                                SENSOR.x <= FOREST.mbr_xmax AND
+                                                SENSOR.y >= FOREST.mbr_ymin AND
+                                                SENSOR.y <= FOREST.mbr_ymax
+where FOREST.name != 'Big Woods' and SENSOR.x >= 150 AND
           SENSOR.x <= 180 AND
           SENSOR.y >= 20 AND
           SENSOR.y <= 120
+group by FOREST.name;
+
