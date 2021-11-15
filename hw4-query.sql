@@ -1,4 +1,4 @@
--- Jacob Kefalos , Matt Rittner
+-- Jacob Kefalos , Matt Rindner
 -- jgk22@pitt.edu, Mrv17@pitt.edu
 
 -----------------
