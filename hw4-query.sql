@@ -1,6 +1,10 @@
+-- Jacob Kefalos , Matt Rittner
+-- jgk22@pitt.edu, Mrv17@pitt.edu
+
 -----------------
--- 2
+-- Question #2:
 -----------------
+
 --2a
 --PennDOT built a new road which crosses “Allegheny National Forest”. The road is
 --named “Route Five”, which has road no 105 and length 426.
@@ -27,7 +31,9 @@ begin;
 INSERT INTO WORKER VALUES (105588973, 'Natalia', 1, 'OH' );
 end;
 
---- Part 3
+-----------------
+-- Question #3:
+-----------------
 
 -- sensor 7 reported 9 times, sensor 11 reported 7 times. (just to check if produced correct values)
 --3a
@@ -38,6 +44,9 @@ FROM ( select sensor_id, count(*) as num_reports from REPORT
     group by sensor_id
     order by num_reports) num_reports_taken fetch first 3 rows only;
 
+-- rank sensor ids according to the number of reports taken by each sensor
+-- then fetch the top three rows to get the top three sensors
+
 --3b
 select sensor_id, RANK() OVER(
     ORDER BY num_reports DESC
@@ -45,7 +54,8 @@ select sensor_id, RANK() OVER(
 FROM ( select sensor_id, count(*) as num_reports from REPORT
     group by sensor_id
     order by num_reports) num_reports_taken fetch first 2 rows only offset 3;
-
+-- same premise as 3a but fetch the 2 rows and set the offset to 3 t
+-- inorder to get the two sensors after the top three
 
 --3c
 --select * from coverage;
@@ -55,6 +65,8 @@ having sum(area) >  (
         select sum(area) from COVERAGE where state = 'PA'
         )
 order by total_area desc;
+-- get the state and the total area of forrest coverage in that state
+-- then select states if they have more forest coverage than Pennsylvania
 
 --3d
 --stone valley num is 3
@@ -62,6 +74,8 @@ select r.name
 from road r NATURAL JOIN intersection i
 where i.forest_no = '3'
 group by r.name;
+-- select the roads and intersections where the forest is equal to Big Woods (forrest_no 3)
+-- then group those roads by their road name
 
 --3e
 select ssn, name, RANK() OVER(
@@ -73,18 +87,23 @@ FROM (
     where s.energy < 3
     group by ssn,name
     order by num_charges) num_reports_taken;
+--select and rank workers from the sensor their working on
+-- such that their sensor battery is less than or equal to 2, <3 also achieves this goal
+-- order by the number of sensors each maintainer needs to charge
 
 --3f
 select f.name
 from forest f join coverage c on f.forest_no = c.forest_no
 where c.state = 'PA' and f.acid_level > .60;
 
+-- select forest names based on their coverage in the state of PA and
+-- if their Acid level is greater than 60% (.60)
 
---SELECT * FROM sensor;
 
 -----------------
--- 4
+-- Question #4:
 -----------------
+
 --4a
 drop view if exists Duties;
 create view Duties as
@@ -112,6 +131,8 @@ from forest f, sensor s,  FOREST JOIN SENSOR ON SENSOR.x >= FOREST.mbr_xmin AND
                                                 SENSOR.y <= FOREST.mbr_ymax
 group by f.name, f.forest_no, s.sensor_id
 order by f.forest_no;
+-- create view of which sensors lie within the bounds of any of the Forrests
+
 
 --select * from forest_sensor;
 
@@ -125,7 +146,7 @@ where f.forest_no = i.forest_no
 group by f.forest_no;
 
 -----------------
--- 5
+-- Question #5:
 -----------------
 --5a
 select * from FOREST_ROAD
@@ -138,6 +159,11 @@ select d.maintainer, w.name, w.employing_state, sum(co.area) as total_area
 from Duties d, worker w , state s , coverage co
 where d.maintainer = w.ssn  and co.state = w.employing_state
 group by d.total_num_of_sensors_per_maintainer, w.name, d.maintainer, w.employing_state fetch first row only;
+-- select the maintainer and their employing state and name from the workers table
+-- sum the area of forest within the state each worker works in
+-- then match their info across the table and group by who ever maintains the most
+-- amount of sensors. fetch the first row to get the data for the right worker
+
 
 --5c
 select f.name
@@ -148,10 +174,9 @@ from forest f, sensor s, report r, FOREST JOIN SENSOR ON SENSOR.x >= FOREST.mbr_
 where r.report_time not between
      to_timestamp('10/10/2020 00:00:00','mm/dd/yyyy hh24:mi') and to_timestamp('10/11/2020 00:00:00','mm/dd/yyyy hh24:mi')
 group by f.name;
-
-
-
-
+-- select the name of forest that are joined from the sensor and forest tables,
+-- then match the areas each sensor lies in within each forest
+-- finally find the the forrest where no sensors had reports from the given timestamps
 
 -- -- select w.name, w.employing_state, c.area
 -- 5d
@@ -178,4 +203,7 @@ where FOREST.name != 'Big Woods' and SENSOR.x >= 150 AND
           SENSOR.y >= 20 AND
           SENSOR.y <= 120
 group by FOREST.name;
+-- use the same way to locate which sensors lie within each forests
+-- and then find the sensors that lie within the range of the big woods forest
+--ommit big woods so we only get the forests that share same sensors as big woods
 
