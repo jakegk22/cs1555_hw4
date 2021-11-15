@@ -148,7 +148,11 @@ group by f.forest_no;
 -----------------
 -- Question #5:
 -----------------
+<<<<<<< HEAD
 REFRESH MATERIALIZED VIEW duties_mv;
+=======
+
+>>>>>>> 3d4a6624a45ad118f337a00525af778596fda6c2
 --5a
 select * from FOREST_ROAD
 order by num_of_roads desc
@@ -211,5 +215,5 @@ where FOREST.name != 'Big Woods' and SENSOR.x >= 150 AND
 group by FOREST.name;
 -- use the same way to locate which sensors lie within each forests
 -- and then find the sensors that lie within the range of the big woods forest
---ommit big woods so we only get the forests that share same sensors as big woods
+-- omit big woods so we only get the forests that share same sensors as big woods
 
