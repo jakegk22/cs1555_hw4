@@ -133,9 +133,28 @@ order by num_of_roads desc
 fetch first 2 rows only offset 1;
 
 --5b
-select * from Duties;
--- -- select w.name, w.employing_state, c.area
 
+select d.maintainer, w.name, w.employing_state, sum(co.area) as total_area
+from Duties d, worker w , state s , coverage co
+where d.maintainer = w.ssn  and co.state = w.employing_state
+group by d.total_num_of_sensors_per_maintainer, w.name, d.maintainer, w.employing_state fetch first row only;
+
+--5c
+select f.name
+from forest f, sensor s, report r, FOREST JOIN SENSOR ON SENSOR.x >= FOREST.mbr_xmin AND
+                                                SENSOR.x <= FOREST.mbr_xmax AND
+                                                SENSOR.y >= FOREST.mbr_ymin AND
+                                                SENSOR.y <= FOREST.mbr_ymax
+where r.report_time not between
+     to_timestamp('10/10/2020 00:00:00','mm/dd/yyyy hh24:mi') and to_timestamp('10/11/2020 00:00:00','mm/dd/yyyy hh24:mi')
+group by f.name;
+
+
+
+
+
+-- -- select w.name, w.employing_state, c.area
+-- 5d
 select d.maintainer, d.total_num_of_sensors_per_maintainer
 from  Duties d, worker w
 order by total_num_of_sensors_per_maintainer desc
@@ -145,4 +164,16 @@ fetch first 1 rows only;
 --as worker_maintaining_most_num_of_sensors ;
 --222222222,Mike,4,OH is the ans
 
-select * from worker;
+--select * from worker;
+
+--5e
+
+select f.name
+from forest f, sensor s, FOREST JOIN SENSOR ON SENSOR.x >= f.mbr_xmin AND
+                                                SENSOR.x <= f.mbr_xmax AND
+                                                SENSOR.y >= f.mbr_ymin AND
+                                                SENSOR.y <= f.mbr_ymax
+where SENSOR.x >= 150 AND
+          SENSOR.x <= 180 AND
+          SENSOR.y >= 20 AND
+          SENSOR.y <= 120
