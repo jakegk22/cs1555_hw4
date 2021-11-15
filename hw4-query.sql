@@ -148,6 +148,7 @@ group by f.forest_no;
 -----------------
 -- Question #5:
 -----------------
+REFRESH MATERIALIZED VIEW duties_mv;
 --5a
 select * from FOREST_ROAD
 order by num_of_roads desc
@@ -180,10 +181,15 @@ group by f.name;
 
 -- -- select w.name, w.employing_state, c.area
 -- 5d
-select d.maintainer, d.total_num_of_sensors_per_maintainer
-from  Duties d, worker w
-order by total_num_of_sensors_per_maintainer desc
-fetch first 1 rows only;
+select d_mv.maintainer, w.name, w.employing_state, sum(co.area) as total_area
+from duties_mv d_mv, worker w , state s , coverage co
+where d_mv.maintainer = w.ssn  and co.state = w.employing_state
+group by d_mv.total_num_of_sensors_per_maintainer, w.name, d_mv.maintainer, w.employing_state fetch first row only;
+-- select d.maintainer, d.total_num_of_sensors_per_maintainer
+-- from  Duties d, worker w
+-- order by total_num_of_sensors_per_maintainer desc
+-- fetch first 1 rows only;
+
 -- where d.maintainer = w.ssn;
 
 --as worker_maintaining_most_num_of_sensors ;
